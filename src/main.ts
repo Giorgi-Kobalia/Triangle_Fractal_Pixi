@@ -19,16 +19,6 @@ async function init() {
 
   layout.init();
   app.stage.addChild(layout.container);
-
-  // setTimeout(() => {
-  //   layout.destroy();
-  //   console.log("destroy");
-  // }, 3000);
-
-  // setTimeout(() => {
-  //   layout.init();
-  //   console.log("init");
-  // }, 5000);
 }
 
 init();

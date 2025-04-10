@@ -5,7 +5,8 @@ export class Layout {
   public container = new Container();
   public bg = new Graphics();
   public ticker = new Ticker();
-  public text = new Text();
+  public btn = new Text();
+  public amount = new Text();
 
   public A = { x: 0, y: 600 };
   public B = { x: 300, y: 0 };
@@ -13,17 +14,19 @@ export class Layout {
 
   public start = this.A;
 
-  public maximumDots = 10000;
+  public maximumDots = 20000;
   public currentDots = 0;
   public started = false;
 
   init() {
-    this.container.position.set(100, 30);
-    this.drawInitialDots();
-    this.drawText();
-
     this.currentDots = 0;
     this.start = this.A;
+    this.container.position.set(100, 30);
+
+    this.drawInitialDots();
+    this.drawText();
+    this.drawAmount();
+
 
     this.ticker.add(this.tick, this);
   }
@@ -37,11 +40,12 @@ export class Layout {
 
     const nextPoint = this.defineNewPoint();
 
+    this.currentDots++;
+
     if (nextPoint) {
       this.drawNewPoint(this.start, nextPoint);
+      this.updateAmount();
     }
-    
-    this.currentDots++;
   }
 
   drawInitialDots() {
@@ -51,32 +55,51 @@ export class Layout {
   }
 
   drawText() {
-    this.text = new Text({
+    this.btn = new Text({
       text: `START`,
       style: {
         fontSize: 48,
-        fill: "white",
+        fill: "gold",
       },
     });
 
-    this.text.position.set(300, 680);
-    this.text.anchor.set(0.5, 0.5);
-    this.container.addChild(this.text);
-    this.text.interactive = true;
-    this.text.cursor = "pointer";
-    this.text.resolution = 2;
+    this.btn.position.set(300, 680);
+    this.btn.anchor.set(0.5, 0.5);
+    this.container.addChild(this.btn);
+    this.btn.interactive = true;
+    this.btn.cursor = "pointer";
+    this.btn.resolution = 2;
 
-    this.text.on("pointerdown", () => {
+    this.btn.on("pointerdown", () => {
       this.started = !this.started;
       if (this.started) {
         this.ticker.start();
-        this.text.text = `RESET`;
+        this.btn.text = `RESET`;
       } else {
         this.destroy();
         this.init();
-        this.text.text = `START`;
+        this.btn.text = `START`;
       }
     });
+  }
+
+  drawAmount() {
+    this.amount = new Text({
+      text: `${this.currentDots}/${this.maximumDots}`,
+      style: {
+        fontSize: 30,
+        fill: "gold",
+      },
+    });
+
+    this.amount.position.set(300, 730);
+    this.amount.anchor.set(0.5, 0.5);
+    this.container.addChild(this.amount);
+    this.amount.resolution = 2;
+  }
+
+  updateAmount() {
+    this.amount.text = `${this.currentDots}/${this.maximumDots}`;
   }
 
   defineNewPoint() {
